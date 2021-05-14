@@ -1,0 +1,22 @@
+import requests
+from bs4 import BeautifulSoup
+import time
+
+headers={"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36"}
+
+for page in range(0,5):
+    url=f"https://www.liepin.com/zhaopin/?compkind=&dqs=&pubTime=&pageSize=40&salary=&compTag=180&sortFlag=15&degradeFlag=0&compIds=&subIndustry=&jobKind=&industries=&compscale=&key=%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86&siTag=i9Jq-FcUGTpC9QESjC5G3Q%7EfA9rXquZc5IkJpXC-Ycixw&d_sfrom=search_fp&d_ckId=61ea6ea3f6d5f5edca49995a72e6c97b&d_curPage=0&d_pageSize=40&d_headId=61ea6ea3f6d5f5edca49995a72e6c97b&curPage={page}"
+    response=requests.get(url,headers=headers)
+    html=response.text
+    soup=BeautifulSoup(html,"lxml")
+    
+    content_all=soup.find_all(class_="sojob-item-main clearfix")
+    for content in content_all:
+        company=content.find(class_="company-info nohover").find("a").string.strip()
+        job=content.find("a").string.strip()
+        jobURL=content.find("a").attrs["href"]
+        if content.find(class_="field-financing").find("span").string=="已上市":
+            print(f"{company},{job},{jobURL}")
+            with open("工作数据.txt","a") as f:
+                f.write(f"{company},{job},{jobURL}\n")
+    time.sleep(2)
