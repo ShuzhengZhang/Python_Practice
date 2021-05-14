@@ -1,0 +1,32 @@
+node_num = eval(input("请输入图的顶点个数："))
+M=float("inf")
+dis = list([M]*node_num for _ in range(node_num))
+while True:
+    a,b,n=eval(input("请输入每条边的起点终点及其路长（逗号分隔 输入0，0，0退出）："))
+    if a==0 :
+        break
+    else:
+        dis[a-1][b-1]=n
+        continue
+for zz in range(node_num):
+    dis[zz][zz]=0
+print("临接矩阵为(inf表示正无穷):")
+i=0
+while i < node_num:
+    print(dis[i])
+    i+=1
+
+
+num=1   #循环计数器
+while num < node_num:
+    for i in range(node_num):
+        for j in range(node_num):
+            for k in range(node_num):   #Floyd法  将行向量转置后与列相加，与原值相比后保留最小值
+                dis[i][j] = min(dis[i][j], dis[i][k] + dis[k][j])  
+    num+=1  #迭代n-1后退出循环
+
+print('各个点间的最短路长为:')   #输出结果及查询功能
+for i in range(node_num):
+    print(dis[i])
+s,e=eval(input("请输入要查询最短路的起止点（逗号分隔）:"))
+print(f"{s}和{e}之间的最短路长为{dis[s-1][e-1]}")
